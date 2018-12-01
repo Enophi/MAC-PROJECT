@@ -1,0 +1,29 @@
+version: "3.0"
+services:
+  neo4j:
+    container_name: MAC-2018-NEO4J
+    image: neo4j:latest
+    ports:
+      # HTTP
+      - "7474:7474"
+      # HTTPS
+      - "7473:7473"
+      # BOLT
+      - "7687:7687"
+    volumes:
+      - ./DATA:/data
+      - ./LOGS:/logs
+
+  backend:
+    container_name: MAC-2018-BACKEND
+    build:
+      context: ./APP
+      dockerfile: Dockerfile
+    command: npm run start.dev
+    user: "node"
+    volumes:
+      - ./APP:/home/node/app
+    links:
+    - neo4j
+    ports:
+      - "3000:3000"
