@@ -3,5 +3,6 @@ module.exports = {
         type: 'uuid',
         primary: true
     },
-    name: 'string'
-}
+    name: 'string',
+    tata: 'string'
+};

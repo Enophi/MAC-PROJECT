@@ -7,13 +7,13 @@ export default class RecipeRouteController {
         DatabaseController.getInstance().neo.all('Recipe').then(collection => {
             return collection.toJson();
         }).then(json => {
-            res.json(200, json);
             console.log(json)
-        }).catch(() => {
-            console.log("ERROR: getAll('Recipe)");
+            res.json(200, json);
+            next();
+        }).catch((e) => {
+            console.log("ERROR: getAll('Recipe) : " + e);
+            next(false);
         });
-
-        return next();
     }
 
 }

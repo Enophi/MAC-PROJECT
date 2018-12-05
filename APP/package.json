@@ -11,14 +11,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
+    "neode": "^0.2.10",
+    "restify": "^7.2.3",
     "@types/node": "^10.12.10",
     "@types/restify": "^7.2.6",
     "ts-node-dev": "^1.0.0-pre.31",
     "typescript": "^3.2.1"
-  },
-  "dependencies": {
-    "neode": "^0.2.10",
-    "restify": "^7.2.3"
   }
 }

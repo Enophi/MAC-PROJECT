@@ -13,17 +13,3 @@ services:
     volumes:
       - ./DATA:/data
       - ./LOGS:/logs
-
-  backend:
-    container_name: MAC-2018-BACKEND
-    build:
-      context: ./APP
-      dockerfile: Dockerfile
-    command: npm run start.dev
-    user: "node"
-    volumes:
-      - ./APP:/home/node/app
-    links:
-    - neo4j
-    ports:
-      - "3000:3000"

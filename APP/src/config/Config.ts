@@ -8,7 +8,7 @@ export let config: IConfig = {
     version: '1.0.0',
     port: 3000,
     env: 'dev',
-    neo_url: 'bolt://neo4j',
+    neo_url: 'bolt://localhost:7687',
     neo_user: 'neo4j',
     neo_pass: 'test'
 };
