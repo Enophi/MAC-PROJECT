@@ -11,7 +11,7 @@ export default class RecipeRouteController {
             res.json(200, json);
             next();
         }).catch((e) => {
-            console.log("ERROR: getAll('Recipe) : " + e);
+            console.log("ERROR: " + e);
             next(false);
         });
     }
