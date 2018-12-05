@@ -10,7 +10,7 @@ export let api = restify.createServer({
 });
 
 /**
- * Load all the routes in the `routes` folder
+ * Load all the routes in the `routes` folders
  */
 fs.readdirSync(__dirname + '/routes').forEach(function (routeConfig: string) {
     let route = require(__dirname + '/routes/' + routeConfig);
