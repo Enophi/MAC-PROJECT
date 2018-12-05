@@ -1,6 +1,7 @@
 ### Project specifics ###
 DATA
 LOGS
+APP/.env
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
