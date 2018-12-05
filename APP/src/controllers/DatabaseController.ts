@@ -5,7 +5,7 @@ export class DatabaseController {
 
     private static _instance: DatabaseController = new DatabaseController();
 
-    public neo = new Neode(config.neo_url, config.neo_user, config.neo_pass);
+    public neo = new Neode(config.neo_url, config.neo_user, config.neo_pass!);
 
     constructor() {
         if (DatabaseController._instance) {
@@ -30,6 +30,7 @@ export class DatabaseController {
             Recipe: require('../models/Recipe'),
             Ingredient: require('../models/Ingredient')
         });
+        
         console.log("Model load");
     }
 

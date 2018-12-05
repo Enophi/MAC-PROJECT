@@ -12,6 +12,7 @@ export default class RecipeRouteController {
             next();
         }).catch((e) => {
             console.log("ERROR: " + e);
+            res.send(500, {error:e})
             next(false);
         });
     }

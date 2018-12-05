@@ -4,6 +4,6 @@ export default interface IConfig {
     env: string;
     version: string;
     neo_user: string;
-    neo_pass: string;
+    neo_pass?: string
     neo_url: string;
 }
