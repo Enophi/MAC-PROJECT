@@ -1,5 +1,5 @@
 # Prérequis
-Il vous installer __node__ et __npm__.
+Il vous faut installer __node__ et __npm__.
 
 # Installation
 Se placer dans le dossier APP et installer les dépendances du projet.
