@@ -1,5 +1,5 @@
 import * as restify from 'restify';
-import RC from '../controllers/RecipeRouteController'
+import RC from '../controllers/RecipeRouteController';
 
 /**
  * Setup all routes for the Recipe routes
