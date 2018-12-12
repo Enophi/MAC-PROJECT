@@ -4,17 +4,7 @@ import {DatabaseController} from "./DatabaseController";
 export default class UserRouteController {
 
     public getAll(req: restify.Request, res: restify.Response, next: restify.Next) {
-        DatabaseController.getInstance().neo.all('User').then(collection => {
-            return collection.toJson();
-        }).then(json => {
-            console.log(json)
-            res.json(200, json);
-            next();
-        }).catch((e) => {
-            console.log("ERROR: " + e);
-            res.send(500, {error:e})
-            next(false);
-        });
+        return DatabaseController.getInstance().getAll(req, res, next, 'User')
     }
 
 }
