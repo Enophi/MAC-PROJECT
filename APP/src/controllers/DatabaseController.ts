@@ -41,6 +41,24 @@ export class DatabaseController {
       });
     }
 
+    /*
+      Return one for a model
+    */
+    public getOne(req: restify.Request, res: restify.Response, next: restify.Next, type:string){
+        return DatabaseController.getInstance().neo.findById(type, req.params.id).then(collection => {
+            console.log(collection.toJson());
+            return collection.toJson();
+        }).then(json => {
+            console.log(json)
+            res.json(200, json);
+            next();
+        }).catch((e) => {
+            console.log("ERROR: " + e);
+            res.send(500, {error:e})
+            next(false);
+        });
+    }
+
     /**
      * Load the entities schema
      */
@@ -53,5 +71,6 @@ export class DatabaseController {
 
         console.log("Model load");
     }
+
 
 }

@@ -1,5 +1,6 @@
 import * as restify from 'restify';
 import Controller from '../controllers/UserRouteController';
+import {DatabaseController} from "../controllers/DatabaseController";
 
 /**
  * Setup all routes for the Recipe routes
@@ -8,6 +9,7 @@ import Controller from '../controllers/UserRouteController';
 function addUserRoutes(api: restify.Server) {
     let ctrl = new Controller();
     api.get('/users', ctrl.getAll);
+    api.get('/user/:id', ctrl.getOne);
 }
 
 module.exports.routes = addUserRoutes;

@@ -7,4 +7,8 @@ export default class UserRouteController {
         return DatabaseController.getInstance().getAll(req, res, next, 'User')
     }
 
+    public getOne(req: restify.Request, res: restify.Response, next: restify.Next) {
+        return DatabaseController.getInstance().getOne(req, res, next, 'User')
+    }
+
 }
