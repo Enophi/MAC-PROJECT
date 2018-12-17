@@ -83,5 +83,5 @@ Accédez à http://localhost:3000/recipes (browser, postman, ...) pour récupér
 ```
 # Documentations
 - [Neo4j](https://neo4j.com/docs/)
-- [Neode](https://www.npmjs.com/package/neode) : Interaction avec Neo4j depuis le backend
+- [Neo4j Driver Javascript](https://neo4j.com/docs/driver-manual/1.7/get-started/)
 - [TypeScript](https://www.typescriptlang.org/docs/handbook/basic-types.html)
