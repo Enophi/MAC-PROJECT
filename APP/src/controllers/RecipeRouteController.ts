@@ -2,7 +2,7 @@ import * as restify from 'restify';
 import { DatabaseController } from "./DatabaseController";
 
 export default class RecipeRouteController {
-
+  
     public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
 
         let query: string = "MATCH r=()-->() RETURN r LIMIT 25"

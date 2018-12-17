@@ -1,6 +1,7 @@
 import * as Neo4J from "neo4j-driver";
 import { config } from '../config/Config';
 import { triggerAsyncId } from "async_hooks";
+import * as restify from 'restify';
 
 export class DatabaseController {
 
@@ -75,5 +76,6 @@ export class DatabaseController {
             cb(resultsObject);
         });
     }
+
 
 }
