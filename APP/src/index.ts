@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as restify from 'restify';
-import {config} from './config/Config'
+import { config } from './config/Config'
 
 /**
  * Create the server
@@ -8,6 +8,9 @@ import {config} from './config/Config'
 export let api = restify.createServer({
     name: config.name
 });
+
+api.use(restify.plugins.queryParser());
+api.use(restify.plugins.bodyParser());
 
 /**
  * Load all the routes in the `routes` folders

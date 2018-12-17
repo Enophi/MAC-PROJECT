@@ -7,7 +7,9 @@ import RC from '../controllers/RecipeRouteController';
  */
 function addRecipeRoutes(api: restify.Server) {
     let ctrl = new RC();
-    api.get('/recipes', ctrl.getAll);
+    api.get('/recipes', ctrl.getAllRecipes);
+    api.get('/recipes2', ctrl.getAllRecipes2);
+    api.post('/recipe', ctrl.addRecipe);
 }
 
 module.exports.routes = addRecipeRoutes;
