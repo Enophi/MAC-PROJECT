@@ -56,31 +56,6 @@ Une route a été définie pour montrer la structure du projet.
 
 Accédez à http://localhost:3000/recipes (browser, postman, ...) pour récupérer toutes les recettes sauvegardées en base.
 
-```json
-[
-    {
-        "_id": 0,
-        "_labels": [
-            "Recipe"
-        ],
-        "name": "Tarte au citron",
-        "preparation": 90,
-        "has": {
-            "_id": 0,
-            "_type": "HAS",
-            "quantity": 4,
-            "unit": "pce",
-            "node": {
-                "_id": 1,
-                "_labels": [
-                    "Ingredient"
-                ],
-                "name": "citron"
-            }
-        }
-    }
-]
-```
 # Documentations
 - [Neo4j](https://neo4j.com/docs/)
 - [Neo4j Driver Javascript](https://neo4j.com/docs/driver-manual/1.7/get-started/)
