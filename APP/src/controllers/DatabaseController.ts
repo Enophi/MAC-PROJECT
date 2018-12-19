@@ -2,6 +2,7 @@ import * as Neo4J from "neo4j-driver";
 import { config } from '../config/Config';
 import { triggerAsyncId } from "async_hooks";
 import * as restify from 'restify';
+import { driver } from "neo4j-driver/types/v1";
 
 export class DatabaseController {
 
@@ -77,11 +78,22 @@ export class DatabaseController {
         });
     }
 
-    public save(type: string, objectToSave:any, cb:(result: any, error:string) => void) {
+    public saveReceipe(objectToSave:any, cb:(result: any, error:string) => void) {
         
+        let session = this.driver.session();
         
-        
-        cb({}, "ERROR");
+        const writeTx = session.writeTransaction(tx => {
+            const receipe_params = {
+                name: objectToSave.name,
+                preparation: objectToSave.preparation,
+                cuisson: objectToSave.cuisson
+            };
+
+            tx.run('CREATE (r:Receipe {name:$name, preparation:$preparation, cuisson:$cuisson})', receipe_params);
+        }).then(() => {
+            session.close();
+            cb({status:'ok'}, "");
+        });
     }
 
 }
