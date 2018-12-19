@@ -27,9 +27,11 @@ export default class RecipeRouteController {
         console.log(req.body);
         // TODO Schema Validation of the INPUT
 
-        DatabaseController.getInstance().save("Recipe", result => {
-            
-            res.json(200, result);
+        DatabaseController.getInstance().save("Recipe", req.body, (result, error) => {
+            if(error)
+                res.json(500, error);
+            else
+                res.json(200, result);
         });
     }
 

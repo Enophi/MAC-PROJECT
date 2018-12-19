@@ -77,8 +77,11 @@ export class DatabaseController {
         });
     }
 
-    public save(type: string, cb:(result: any) => void) {
-        cb({});
+    public save(type: string, objectToSave:any, cb:(result: any, error:string) => void) {
+        
+        
+        
+        cb({}, "ERROR");
     }
 
 }
