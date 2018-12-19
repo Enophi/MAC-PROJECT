@@ -96,4 +96,24 @@ export class DatabaseController {
         });
     }
 
+    public saveUser(objectToSave:any, cb:(result: any, error:string) => void) {
+        
+        let session = this.driver.session();
+        
+        const writeTx = session.writeTransaction(tx => {
+            const user_params = {
+                name: objectToSave.username,
+                email: objectToSave.email,
+                password: objectToSave.password
+            };
+
+            tx.run('CREATE (r:User {name:$name, email:$email, password:$password})', user_params);
+        }).then(() => {
+            session.close();
+            cb({status:'ok'}, "");
+        }).catch(()=>{
+            
+        });
+    }
+
 }
