@@ -77,5 +77,8 @@ export class DatabaseController {
         });
     }
 
+    public save(type: string, cb:(result: any) => void) {
+        cb({});
+    }
 
 }

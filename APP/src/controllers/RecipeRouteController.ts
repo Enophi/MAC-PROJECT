@@ -2,7 +2,7 @@ import * as restify from 'restify';
 import { DatabaseController } from "./DatabaseController";
 
 export default class RecipeRouteController {
-  
+
     public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
 
         let query: string = "MATCH r=()-->() RETURN r LIMIT 25"
@@ -25,10 +25,12 @@ export default class RecipeRouteController {
 
     public addRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
         console.log(req.body);
-
         // TODO Schema Validation of the INPUT
 
-        res.json(200, {});
+        DatabaseController.getInstance().save("Recipe", result => {
+            
+            res.json(200, result);
+        });
     }
 
 }
