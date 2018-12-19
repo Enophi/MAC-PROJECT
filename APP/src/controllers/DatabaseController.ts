@@ -126,7 +126,7 @@ export class DatabaseController {
                 password: objectToSave.password
             };
 
-            tx.run('MATCH (r:User) WHERE email=$email AND password=$password)', user_params);
+            tx.run('MATCH (r:User) WHERE r.email=$email AND r.password=$password) RETURN r', user_params);
         }).then(() => {
             session.close();
             cb({status:'ok'}, "");
