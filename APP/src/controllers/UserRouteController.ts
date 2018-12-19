@@ -14,4 +14,16 @@ export default class UserRouteController {
                 res.json(200, result);
         });
     }
+
+    public loginUser(req: restify.Request, res: restify.Response, next: restify.Next) {
+        console.log(req.body);
+        // TODO Schema Validation of the INPUT
+
+        DatabaseController.getInstance().loginUser(req.body, (result, error) => {
+            if(error)
+                res.json(500, error);
+            else
+                res.json(200, result);
+        });
+    }
 }

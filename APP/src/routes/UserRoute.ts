@@ -8,7 +8,8 @@ import {DatabaseController} from "../controllers/DatabaseController";
  */
 function addUserRoutes(api: restify.Server) {
     let ctrl = new Controller();
-    api.post('/user', ctrl.saveUser);
+    api.post('/login', ctrl.loginUser);
+    api.post('/register', ctrl.saveUser);
 }
 
 module.exports.routes = addUserRoutes;

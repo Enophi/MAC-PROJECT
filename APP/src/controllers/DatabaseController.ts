@@ -112,6 +112,25 @@ export class DatabaseController {
             session.close();
             cb({status:'ok'}, "");
         }).catch(()=>{
+
+        });
+    }
+
+    public loginUser(objectToSave:any, cb:(result: any, error:string) => void) {
+        
+        let session = this.driver.session();
+        
+        const writeTx = session.writeTransaction(tx => {
+            const user_params = {
+                email: objectToSave.email,
+                password: objectToSave.password
+            };
+
+            tx.run('MATCH (r:User) WHERE email=$email AND password=$password)', user_params);
+        }).then(() => {
+            session.close();
+            cb({status:'ok'}, "");
+        }).catch(()=>{
             
         });
     }
