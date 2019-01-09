@@ -2,7 +2,7 @@ import * as Neo4J from "neo4j-driver";
 import { config } from '../config/Config';
 import { triggerAsyncId } from "async_hooks";
 import * as restify from 'restify';
-import { driver } from "neo4j-driver/types/v1";
+import { driver, Record } from "neo4j-driver/types/v1";
 
 export class DatabaseController {
 
@@ -78,10 +78,10 @@ export class DatabaseController {
         });
     }
 
-    public saveReceipe(objectToSave:any, cb:(result: any, error:string) => void) {
-        
+    public saveReceipe(objectToSave: any, cb: (result: any, error: string) => void) {
+
         let session = this.driver.session();
-        
+
         const writeTx = session.writeTransaction(tx => {
             const receipe_params = {
                 name: objectToSave.name,
@@ -92,14 +92,14 @@ export class DatabaseController {
             tx.run('CREATE (r:Receipe {name:$name, preparation:$preparation, cuisson:$cuisson})', receipe_params);
         }).then(() => {
             session.close();
-            cb({status:'ok'}, "");
+            cb({ status: 'ok' }, "");
         });
     }
 
-    public saveUser(objectToSave:any, cb:(result: any, error:string) => void) {
-        
+    public saveUser(objectToSave: any, cb: (result: any, error: string) => void) {
+
         let session = this.driver.session();
-        
+
         const writeTx = session.writeTransaction(tx => {
             const user_params = {
                 name: objectToSave.username,
@@ -110,28 +110,8 @@ export class DatabaseController {
             tx.run('CREATE (r:User {name:$name, email:$email, password:$password})', user_params);
         }).then(() => {
             session.close();
-            cb({status:'ok'}, "");
-        }).catch(()=>{
-
-        });
-    }
-
-    public loginUser(objectToSave:any, cb:(result: any, error:string) => void) {
-        
-        let session = this.driver.session();
-        
-        const writeTx = session.writeTransaction(tx => {
-            const user_params = {
-                email: objectToSave.email,
-                password: objectToSave.password
-            };
-
-            tx.run('MATCH (r:User) WHERE r.email=$email AND r.password=$password) RETURN r', user_params);
-        }).then(() => {
-            session.close();
-            cb({status:'ok'}, "");
-        }).catch(()=>{
-            
+            cb({ 'email': objectToSave.email, status: 'ok' }, "");
+        }).catch(() => {
         });
     }
 
