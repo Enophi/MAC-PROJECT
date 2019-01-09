@@ -7,7 +7,9 @@ import Controller from '../controllers/IngredientRouteController';
  */
 function addIngredientRoutes(api: restify.Server) {
     let ctrl = new Controller();
-    api.get('/ingredients', ctrl.getAll);
+    api.get('/ingredients', ctrl.getAllIngredients);
+    api.get('/ingredients/q', ctrl.getQ);
+    api.get('/ingredient/:id', ctrl.getIngredient);
 }
 
 module.exports.routes = addIngredientRoutes;
