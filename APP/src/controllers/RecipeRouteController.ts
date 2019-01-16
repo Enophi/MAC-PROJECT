@@ -62,18 +62,76 @@ export default class RecipeRouteController {
 
   public addRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
       console.log(req.body);
-      // TODO Schema Validation of the INPUT
 
-      //create ingredients
+      /* Example
+      {
+        "recipe":{
+          "name":"Tarte au framboise",
+          "preparation":"30"
+        },
+        "ingredients":[
+          {"name":"framboise", "quantity":"10", "unit":"pce"},
+          {"name":"sucre","quantity":"10", "unit":"scoop"}
+        ],
+        "user":61
+      }
+      */
+
+      let recipe:any = req.body.recipe;
+      let ingredients:Array<any> = req.body.ingredients;
+      let user:String = req.body.user;
+
+      //requiered input
+      if(user == null || recipe == null || recipe.name == null){
+        res.json(500, {"error": "Invalid JSON"});
+      }
+
       //create recipe
-      //create relations
+      let query:string = "CREATE (r:Recipe {name: '"+ recipe.name +"', preparation: "+ recipe.preparation +"}) RETURN r"
+      DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
+        //user relation
+        let queryRel:string = "MATCH (r:Recipe),(u:User) "
+                              +" WHERE r.name = '"+ recipe.name +"'  AND ID(u) = " + user
+                              + " CREATE (u)-[rel:PUBLISH]->(r) "
+                              +"RETURN rel";
 
-      DatabaseController.getInstance().saveReceipe(req.body, (result, error) => {
-          if(error)
-              res.json(500, error);
-          else
-              res.json(200, result);
+
+        ingredients.forEach(ing => {
+          //check if ingredient exist
+          let query:string = 'MATCH (i:Ingredient)'
+                             + 'WHERE  i.name = "'+ ing.name
+                             + '" RETURN i';
+
+          DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
+
+            let queryRel:string = "MATCH (r:Recipe),(i:Ingredient) "
+                                  +" WHERE r.name = '"+ recipe.name +"'  AND i.name = '" + ing.name
+                                  + "' CREATE (r)-[rel:HAS {quantity: " + ing.quantity + ", unit:'"+ ing.unit +"'}]->(i) "
+                                  +"RETURN rel";
+
+            //create Ingredient and relation
+            if(result.length == 0){
+              let queryInsert:string = "CREATE (i:Ingredient {name:'"+ ing.name +"'}) RETURN i";
+              DatabaseController.getInstance().makeCipherQuery(queryInsert, 'i', result => {
+                DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {});
+              });
+
+            }else{ //ingredients exist
+              //create rel
+              DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {});
+            }
+          });
+        });
+
+        DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+          res.json(200, 1);
+        });
       });
   }
+
+
+/*  private addIngredientWithRelation(ing:any, recipe:string){
+
+}*/
 
 }
