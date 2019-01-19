@@ -3,13 +3,44 @@ import { DatabaseController } from "./DatabaseController";
 
 export default class RecipeRouteController {
 
+  private static _instance: RecipeRouteController = new RecipeRouteController();
+
+  /**
+   * constructor
+   */
+  constructor() {
+      if (RecipeRouteController._instance) {
+          throw new Error("Error: Instantiation failed: Use RecipeRouteController.getInstance() instead of new.")
+      }
+      RecipeRouteController._instance = this;
+  }
+
+  /**
+   * Return the singleton instance of RecipeRouteController
+   */
+  public static getInstance(): RecipeRouteController {
+      return RecipeRouteController._instance;
+  }
+
+  /**
+   * Update all recipes
+   * @param req The request parameter
+   * @param res result parameter
+   * @param next next restify
+   */
   public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
-      let query: string = "MATCH r=()-->() RETURN r" // LIMIT 25 ?
+      let query: string = "MATCH r=()-->() RETURN r"
       DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
           res.json(200, result);
       });
   }
 
+  /**
+   * get a recipe
+   * @param req The request parameter
+   * @param res result parameter
+   * @param next next restify
+   */
   public getRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
       let query: string = 'MATCH m = (r:Recipe)--() WHERE  ID(r) = toInteger($id) RETURN m';
       DatabaseController.getInstance().makeCipherQuery(query, 'm', result => {
@@ -17,46 +48,54 @@ export default class RecipeRouteController {
       }, {'id': req.params.id});
   }
 
+  /**
+   * Delete a recipe
+   * @param req The request parameter
+   * @param res result parameter
+   * @param next next restify
+   */
   public deleteRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
-    //drop p and p's relations
-    let query: string = 'MATCH (p:Recipe) WHERE ID(p) = toInteger($id)'
-                       +'OPTIONAL MATCH (p)-[r]-() DELETE r,p';
-    DatabaseController.getInstance().makeCipherQuery(query, 'm', result => {
+    let id:string = req.params.id;
+    let user:any = req.headers.authorization;
+
+    RecipeRouteController.getInstance().userIsOwner(res, user, id, () => {
+      RecipeRouteController.getInstance().doDelete(id, () => {
         res.json(200, 1);
-    }, {'id': req.params.id});
+      });
+    });
+
   }
 
+  /**
+   * Update a recipe
+   * @param req The request parameter
+   * @param res result parameter
+   * @param next next restify
+   */
   public updateRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
       let id:string = req.params.id;
+      let user:any = req.headers.authorization;
 
-      let query: string = ''; // TODO
-
-      DatabaseController.getInstance().makeCipherQuery(query, 'm', result => {
-          // TODO Do something with result, map with real Object, clean it, whatever...
-          res.json(200, result);
+      RecipeRouteController.getInstance().userIsOwner(res, user, id, () => {
+          //delete recipe
+          RecipeRouteController.getInstance().doDelete(id, () => {});
+          //and re-create with new ingredients
+          RecipeRouteController.getInstance().addRecipe(req,res,next);
       });
   }
 
+  /**
+   * addRecipe
+   * @param req The request parameter
+   * @param res result parameter
+   * @param next next restify
+   */
   public addRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
       console.log(req.body);
 
-      /* Example
-      {
-        "recipe":{
-          "name":"Tarte au framboise",
-          "preparation":"30"
-        },
-        "ingredients":[
-          {"name":"framboise", "quantity":"10", "unit":"pce"},
-          {"name":"sucre","quantity":"10", "unit":"scoop"}
-        ],
-        "user":61
-      }
-      */
-
       let recipe:any = req.body.recipe;
       let ingredients:Array<any> = req.body.ingredients;
-      let user:String = req.body.user;
+      let user:any = req.headers.authorization;
 
       //requiered input
       if(user == null || recipe == null || recipe.name == null){
@@ -68,41 +107,17 @@ export default class RecipeRouteController {
       DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
 
         ingredients.forEach(ing => {
-          //check if ingredient exist
-          let query:string = 'MATCH (i:Ingredient)'
-                             + 'WHERE  i.name = $name'
-                             + ' RETURN i';
-
-          DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
-
-            let queryRel:string = " MATCH (r:Recipe),(i:Ingredient) "
-                                  +"WHERE r.name = $recipe  AND i.name = $ing "
-                                  +"CREATE (r)-[rel:HAS {quantity: toInteger($quantity), unit: $unit}]->(i) "
-                                  +"RETURN rel";
-            let paramsRel = {'recipe': recipe.name, 'ing': ing.name, 'quantity': ing.quantity, 'unit': ing.unit};
-
-            //create Ingredient and relation
-            if(result.length == 0){
-              DatabaseController.getInstance().makeCipherQuery("CREATE (i:Ingredient {name: $name }) RETURN i", 'i',
-              result => {
-                DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {}, paramsRel);
-              }, {'name': ing.name} );
-
-            }else{ //ingredients exist
-              //create only rel
-              DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {}, paramsRel);
-            }
-          }, {'name': ing.name});
-
+          RecipeRouteController.getInstance().addIngredientWithRelation(ing, recipe.name);
         }); //end forEach
 
         //user relation
         let queryRel:string = "MATCH (r:Recipe),(u:User) "
-                              +" WHERE r.name = $name  AND ID(u) = toInteger($user)"
-                              + " CREATE (u)-[rel:PUBLISH]->(r) "
+                              +"WHERE r.name = $name  AND u.mail = $user "
+                              +"MERGE (u)-[rel:PUBLISH]->(r) "
                               +"RETURN rel";
 
         DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+
           res.json(200, 1);
         }, {'name': recipe.name, 'user': user});
 
@@ -110,8 +125,74 @@ export default class RecipeRouteController {
   }
 
 
-  private addIngredientWithRelation(ing:any, recipe:string){
+  /**
+   * delete a recipe by id
+   * @param id The id of recipe
+   * @param cb callback
+   */
+  private doDelete(id:string, cb:() => void) {
+    //drop p and p's relations
+    let deleteQuery: string = 'MATCH (p:Recipe) WHERE ID(p) = toInteger($id) '
+                             +'OPTIONAL MATCH (p)-[r]-() DELETE r,p';
+     DatabaseController.getInstance().makeCipherQuery(deleteQuery, 'm', result => {
+       cb();
+     }, {'id': id});
+  }
 
+  /**
+   * Add Ingredient with relation recipe
+   * @param ing Ingredient object
+   * @param recipe Recipe's name
+   */
+  private addIngredientWithRelation(ing:any, recipe:string){
+    //check if ingredient exist
+    let query:string = 'MATCH (i:Ingredient)'
+                       + 'WHERE  i.name = $name'
+                       + ' RETURN i';
+
+    DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
+
+      let queryRel:string = " MATCH (r:Recipe),(i:Ingredient) "
+                            +"WHERE r.name = $recipe  AND i.name = $ing "
+                            +"MERGE (r)-[rel:HAS {quantity: toInteger($quantity), unit: $unit}]->(i) "
+                            +"RETURN rel";
+      let paramsRel = {'recipe': recipe, 'ing': ing.name, 'quantity': ing.quantity, 'unit': ing.unit};
+
+      //create Ingredient and relation
+      if(result.length == 0){
+        DatabaseController.getInstance().makeCipherQuery("CREATE (i:Ingredient {name: $name }) RETURN i", 'i',
+        result => {
+          DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {}, paramsRel);
+        }, {'name': ing.name} );
+
+      }else{ //ingredients exist
+        //create only rel
+        DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {}, paramsRel);
+      }
+    }, {'name': ing.name});
+  }
+
+  /**
+   * Verify if user is the owner of recipe
+   * @param res result parameter
+   * @param user The user
+   * @param id The id's recipe
+   * @param cb Callback, called if user is authorized
+   */
+  private userIsOwner(res: restify.Response, user:any, id:string, cb: () => void){
+
+    let query = 'MATCH (r:Recipe) -- (u:User {mail : $user}) ' +
+                'WHERE ID(r) = toInteger($id) ' +
+                'RETURN r';
+
+    DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
+
+      if(result.length != 0){
+        cb();
+      }else{ //error
+        res.json(500, {"error": "user not authorized"});
+      }
+    }, {'user': user, 'id':id});
   }
 
 }

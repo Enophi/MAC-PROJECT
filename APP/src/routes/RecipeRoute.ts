@@ -6,7 +6,7 @@ import RC from '../controllers/RecipeRouteController';
  * @param api The restify server instance
  */
 function addRecipeRoutes(api: restify.Server) {
-    let ctrl = new RC();
+    let ctrl = RC.getInstance();
     api.post('/recipe', ctrl.addRecipe);
     api.get('/recipes', ctrl.getAllRecipes);
     api.get('/recipe/:id', ctrl.getRecipe);
