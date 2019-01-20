@@ -31,6 +31,16 @@ export default class RecipeRouteController {
   public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
       let query: string = "MATCH r=()-->() RETURN r"
       DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
+        let recipes:Array<any> = [];
+        result.forEach(r => {
+          var recipe = {name:'',preparation:'',ingredients:[]};
+
+          recipe.name = r.start.properties.name;
+          recipe.preparation = r.start.properties.preparation;
+
+          //todo add ingredients and update query
+          recipes.push(recipe);
+        });
           res.json(200, result);
       });
   }
@@ -63,7 +73,6 @@ export default class RecipeRouteController {
         res.json(200, 1);
       });
     });
-
   }
 
   /**
@@ -108,7 +117,7 @@ export default class RecipeRouteController {
 
         ingredients.forEach(ing => {
           RecipeRouteController.getInstance().addIngredientWithRelation(ing, recipe.name);
-        }); //end forEach
+        });
 
         //user relation
         let queryRel:string = "MATCH (r:Recipe),(u:User) "
@@ -123,7 +132,6 @@ export default class RecipeRouteController {
 
       }, { 'name': recipe.name, 'preparation':recipe.preparation });
   }
-
 
   /**
    * delete a recipe by id
@@ -186,13 +194,11 @@ export default class RecipeRouteController {
                 'RETURN r';
 
     DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
-
       if(result.length != 0){
         cb();
       }else{ //error
-        res.json(500, {"error": "user not authorized"});
+        res.json(403, {"error": "user not authorized"});
       }
     }, {'user': user, 'id':id});
   }
-
 }
