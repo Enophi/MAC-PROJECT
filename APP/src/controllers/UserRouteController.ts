@@ -26,4 +26,28 @@ export default class UserRouteController {
 
         }, { 'email': req.body.email, 'password': req.body.password });
     }
+
+    public followUser(req: restify.Request, res: restify.Response, next: restify.Next) {
+
+        let user: number = req.body.user;
+        let userToFollow: number = req.body.userToFollow;
+
+        console.log(req.body);
+        console.log(user);
+        console.log(userToFollow);
+
+
+        let queryRel: string = "MATCH (u:User),(utf:User)"
+            + " WHERE ID(u) = " + user + " AND ID(utf) = " + userToFollow
+            + " MERGE (u)-[rel:FOLLOW]->(utf)"
+            + " RETURN rel";
+
+
+        DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+            if (result.length == 0) res.json(401, { 'user': req.body.user, 'status': 'nok' })
+            else res.json(200, { 'user': req.body.user, 'status': 'ok' })
+        });
+
+
+    }
 }

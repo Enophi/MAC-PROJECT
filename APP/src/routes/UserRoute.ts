@@ -1,6 +1,6 @@
 import * as restify from 'restify';
 import Controller from '../controllers/UserRouteController';
-import {DatabaseController} from "../controllers/DatabaseController";
+import { DatabaseController } from "../controllers/DatabaseController";
 
 /**
  * Setup all routes for the Recipe routes
@@ -10,6 +10,7 @@ function addUserRoutes(api: restify.Server) {
     let ctrl = new Controller();
     api.post('/login', ctrl.loginUser);
     api.post('/register', ctrl.saveUser);
+    api.post('/user/follow', ctrl.followUser);
 }
 
 module.exports.routes = addUserRoutes;

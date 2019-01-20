@@ -10,6 +10,7 @@ function addIngredientRoutes(api: restify.Server) {
     api.get('/ingredients', ctrl.getAllIngredients);
     api.get('/ingredients/q', ctrl.getQ);
     api.get('/ingredient/:id', ctrl.getIngredient);
+    api.post('/ingredient/like', ctrl.liked);
 }
 
 module.exports.routes = addIngredientRoutes;
