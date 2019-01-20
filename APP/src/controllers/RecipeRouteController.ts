@@ -163,7 +163,7 @@ export default class RecipeRouteController {
     let user: any = req.headers.authorization;
 
     //requiered input
-    if (user == null || recipe == null || recipe.name == null) {
+    if (user == undefined || recipe == undefined || recipe.name == undefined) {
       res.json(500, { "error": "Invalid JSON" });
     }
 
