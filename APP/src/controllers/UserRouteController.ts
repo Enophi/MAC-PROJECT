@@ -58,4 +58,23 @@ export default class UserRouteController {
             else res.json(200, 1)
         }, { 'user': user, 'userToFollow': userToFollow });
     }
+
+    public  unfallowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
+        let user: any = req.headers.authorization;
+        let userToUnfollow: string = req.params.email;
+
+        console.log(user);
+        console.log(userToUnfollow);
+
+        let queryRel: string = "MATCH (u:User),(utuf:User)"
+            + " WHERE u.email = $user AND utuf.email = $userToUnfollow"
+            + " MATCH (u)-[rel:FOLLOW]->(utuf)"
+            + " DELETE rel"
+            + " RETURN rel";
+
+        DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+            if (result.length == 0) res.json(401, { 'status': 'nok' });
+            else res.json(200, 1);
+        }, { 'user': user, 'userToUnfollow': userToUnfollow });
+    }
 }
