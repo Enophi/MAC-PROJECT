@@ -202,12 +202,12 @@ export default class RecipeRouteController {
     }, { 'user': user, 'id': id });
   }
 
-  /**
-   *
-   * @param req
-   * @param res
-   * @param next
-   */
+    /**
+     * Like a recipe
+     * @param req The request parameter
+     * @param res result parameter
+     * @param next next restify
+     */
   public liked(req: restify.Request, res: restify.Response, next: restify.Next) {
     let user: any = req.headers.authorization;
     let recipe: number = req.params.id;
@@ -215,6 +215,28 @@ export default class RecipeRouteController {
     let queryRel: string = "MATCH (u:User),(r:Recipe)"
       + " WHERE u.email = $user AND ID(r) = toInteger($id)"
       + " MERGE (u)-[rel:LIKE]->(r)"
+      + " RETURN rel";
+
+    DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+      if (result.length == 0) res.json(401, {'status': 'nok' });
+      else res.json(200, 1);
+    }, {'user':user, 'id':recipe});
+  }
+
+    /**
+     * Unlike a recipe
+     * @param req The request parameter
+     * @param res result parameter
+     * @param next next restify
+     */
+  public unliked(req: restify.Request, res: restify.Response, next: restify.Next) {
+    let user: any = req.headers.authorization;
+    let recipe: number = req.params.id;
+
+    let queryRel: string = "MATCH (u:User),(r:Recipe)"
+      + " WHERE u.email = $user AND ID(r) = toInteger($id)"
+      + " MATCH (u)-[rel:LIKE]->(r)"
+      + " DELETE rel"
       + " RETURN rel";
 
     DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
