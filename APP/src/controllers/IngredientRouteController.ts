@@ -2,6 +2,25 @@ import * as restify from 'restify';
 import { DatabaseController } from "./DatabaseController";
 
 export default class IngredientRouteController {
+    private static _instance: IngredientRouteController = new IngredientRouteController();
+
+    /**
+     * constructor
+     */
+    constructor() {
+      if (IngredientRouteController._instance) {
+        throw new Error("Error: Instantiation failed: Use IngredientRouteController.getInstance() instead of new.")
+      }
+      IngredientRouteController._instance = this;
+    }
+
+
+    /**
+     * Return the singleton instance of IngredientRouteController
+     */
+    public static getInstance(): IngredientRouteController {
+      return IngredientRouteController._instance;
+    }
 
     /**
      * Get all ingredients
@@ -13,7 +32,7 @@ export default class IngredientRouteController {
         let query: string = "MATCH (i:Ingredient) RETURN i"
 
         DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
-            res.json(200, result);
+            IngredientRouteController.getInstance().showIngredients(result, res);
         });
     }
 
@@ -28,8 +47,23 @@ export default class IngredientRouteController {
         let query: string = 'MATCH (i:Ingredient) WHERE toLower(i.name) STARTS WITH toLower(\'' + match + '\') RETURN i';
 
         DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
-            res.json(200, result);
+            IngredientRouteController.getInstance().showIngredients(result, res);
         });
+    }
+
+    /**
+     * Show ingredients used by getQ and getAllIngredients
+     * @param result The result from cypher query
+     * @param res result parameter
+     */
+    private showIngredients(result: Array<any>, res:restify.Response){
+      let ingredients :Array<any> = [];
+      result.forEach( r => {
+        let id    = r.identity.low;
+        let name  = r.properties.name;
+        ingredients.push({'id':id, 'name':name});
+      })
+      res.json(200, ingredients);
     }
 
     /**
@@ -42,8 +76,11 @@ export default class IngredientRouteController {
         let id: string = req.params.id;
         let query: string = 'MATCH (i:Ingredient) WHERE ID(i) = ' + id + ' RETURN i';
 
-        DatabaseController.getInstance().makeCipherQuery(query, 'i', result => {
-            res.json(200, result);
+        DatabaseController.getInstance().makeCipherQuery(query, 'i', r => {
+            if(r.length == 0) res.json(200, r);
+            let id    = r[0].identity.low;
+            let name  = r[0].properties.name;
+            res.json(200, {'id':id, 'name':name});
         });
     }
 

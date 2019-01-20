@@ -279,6 +279,12 @@ export default class RecipeRouteController {
     }, {'user':user, 'id':recipe});
   }
 
+  /**
+   * user unlike a recipe
+   * @param req
+   * @param res
+   * @param next
+   */
   public unliked(req: restify.Request, res: restify.Response, next: restify.Next) {
    let user: any = req.headers.authorization;
    let recipe: number = req.params.id;

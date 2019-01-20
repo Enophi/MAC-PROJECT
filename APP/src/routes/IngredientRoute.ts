@@ -6,7 +6,7 @@ import Controller from '../controllers/IngredientRouteController';
  * @param api The restify server instance
  */
 function addIngredientRoutes(api: restify.Server) {
-    let ctrl = new Controller();
+    let ctrl = Controller.getInstance();
     api.get('/ingredients', ctrl.getAllIngredients);
     api.get('/ingredients/q', ctrl.getQ);
     api.get('/ingredient/:id', ctrl.getIngredient);
