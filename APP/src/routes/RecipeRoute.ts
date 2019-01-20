@@ -12,7 +12,7 @@ function addRecipeRoutes(api: restify.Server) {
     api.get('/recipe/:id', ctrl.getRecipe);
     api.del('/recipe/:id', ctrl.deleteRecipe);
     api.put('/recipe/:id', ctrl.updateRecipe);
-    api.put('/recipe/like', ctrl.liked);
+    api.post('/recipe/like', ctrl.liked);
 }
 
 module.exports.routes = addRecipeRoutes;
