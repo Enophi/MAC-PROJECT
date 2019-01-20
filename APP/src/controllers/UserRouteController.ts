@@ -59,7 +59,7 @@ export default class UserRouteController {
         }, { 'user': user, 'userToFollow': userToFollow });
     }
 
-    public  unfallowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
+    public  unfollowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         let user: any = req.headers.authorization;
         let userToUnfollow: string = req.params.email;
 
