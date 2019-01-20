@@ -97,6 +97,7 @@ export class DatabaseController {
         });
     }
 
+    // A supprimer
     public saveUser(objectToSave: any, cb: (result: any, error: string) => void) {
 
         let session = this.driver.session();
@@ -107,7 +108,6 @@ export class DatabaseController {
                 email: objectToSave.email,
                 password: objectToSave.password
             };
-
             tx.run('CREATE (r:User {name:$name, email:$email, password:$password})', user_params);
         }).then(() => {
             session.close();

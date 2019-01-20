@@ -16,7 +16,7 @@ export default class RecipeRouteController {
   }
 
   /**
-   * Return the singleton instance of RecipeRouteController
+   * Return the singleton instance of RecipeRouteController 
    */
   public static getInstance(): RecipeRouteController {
     return RecipeRouteController._instance;
@@ -103,7 +103,7 @@ export default class RecipeRouteController {
   }
 
   /**
-  * get a recipe
+  * Used by getRecipe and getAllRecipes
   * @param r Any object from Cypher query
   */
   private getIngredientFrom(r: any): any{
