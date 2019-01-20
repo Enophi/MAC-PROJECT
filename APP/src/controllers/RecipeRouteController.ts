@@ -209,25 +209,17 @@ export default class RecipeRouteController {
    * @param next
    */
   public liked(req: restify.Request, res: restify.Response, next: restify.Next) {
-
-    let user: number = req.body.user;
-    let recipe: number = req.body.recipe;
-
-    console.log(req.body);
-    console.log(user);
-    console.log(recipe);
+    let user: any = req.headers.authorization;
+    let recipe: number = req.params.id;
 
     let queryRel: string = "MATCH (u:User),(r:Recipe)"
-      + " WHERE u.email = $user AND ID(r) = $id"
+      + " WHERE u.email = $user AND ID(r) = toInteger($id)"
       + " MERGE (u)-[rel:LIKE]->(r)"
       + " RETURN rel";
 
-
     DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
-      if (result.length == 0) res.json(401, { 'user': req.body.user, 'status': 'nok' })
-      else res.json(200, { 'user': req.body.user, 'status': 'ok' })
-    },{'user':user, 'id':recipe});
-
-
+      if (result.length == 0) res.json(401, {'status': 'nok' });
+      else res.json(200, 1);
+    }, {'user':user, 'id':recipe});
   }
 }
