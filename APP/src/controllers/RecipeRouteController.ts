@@ -29,7 +29,7 @@ export default class RecipeRouteController {
    * @param next next restify
    */
   public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
-      let query: string = "MATCH r=()-->() RETURN r"
+      let query: string = "MATCH r=(:Recipe)-->() RETURN r"
       DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
         let recipes:Array<any> = [];
         result.forEach(r => {
@@ -226,7 +226,7 @@ export default class RecipeRouteController {
     DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
       if (result.length == 0) res.json(401, { 'user': req.body.user, 'status': 'nok' })
       else res.json(200, { 'user': req.body.user, 'status': 'ok' })
-    }{'user':user, 'id':recipe});
+    },{'user':user, 'id':recipe});
 
 
   }
