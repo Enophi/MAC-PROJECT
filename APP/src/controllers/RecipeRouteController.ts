@@ -216,12 +216,15 @@ export default class RecipeRouteController {
 
 
     let queryRel: string = "MATCH (u:User),(r:Recipe)"
-      + " WHERE ID(u) = " + user + " AND ID(i) = " + recipe
+      + " WHERE ID(u) = " + user + " AND ID(r) = " + recipe
       + " MERGE (u)-[rel:LIKE]->(r)"
       + " RETURN rel";
 
 
-    DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => { });
+    DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+      if (result.length == 0) res.json(401, { 'user': req.body.user, 'status': 'nok' })
+      else res.json(200, { 'user': req.body.user, 'status': 'ok' })
+    });
 
 
   }

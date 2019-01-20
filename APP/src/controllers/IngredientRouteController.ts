@@ -37,16 +37,16 @@ export default class IngredientRouteController {
 
     public liked(req: restify.Request, res: restify.Response, next: restify.Next) {
 
-        let user:number = req.body.user;
-        let ingredient:number = req.body.ingredient;
+        let user: number = req.body.user;
+        let ingredient: number = req.body.ingredient;
 
         console.log(req.body);
         console.log(user);
         console.log(ingredient);
 
-        let getIngredient:string = "MATCH (i:Ingredient)"
-                             + " WHERE  ID(i) = " + ingredient
-                             + " RETURN i";
+        let getIngredient: string = "MATCH (i:Ingredient)"
+            + " WHERE  ID(i) = " + ingredient
+            + " RETURN i";
 
 
         let queryRel: string = "MATCH (u:User),(i:Ingredient)"
@@ -55,7 +55,10 @@ export default class IngredientRouteController {
             + " RETURN rel";
 
 
-            DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {});
+        DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+            if (result.length == 0) res.json(401, { 'user': req.body.user, 'status': 'nok' })
+            else res.json(200, { 'user': req.body.user, 'status': 'ok' })
+        });
 
 
     }
