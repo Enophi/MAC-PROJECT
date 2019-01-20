@@ -11,7 +11,7 @@ function addUserRoutes(api: restify.Server) {
     api.get('/login', ctrl.loginUser);
     api.post('/register', ctrl.saveUser);
     api.post('/user/follow/:email', ctrl.followUser);
-    api.del('/user/unfollow/:email', ctrl.unfallowUser);
+    api.del('/user/unfollow/:email', ctrl.unfollowUser);
 }
 
 module.exports.routes = addUserRoutes;

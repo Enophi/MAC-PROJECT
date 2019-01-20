@@ -16,7 +16,7 @@ export default class RecipeRouteController {
   }
 
   /**
-   * Return the singleton instance of RecipeRouteController 
+   * Return the singleton instance of RecipeRouteController
    */
   public static getInstance(): RecipeRouteController {
     return RecipeRouteController._instance;
@@ -278,4 +278,20 @@ export default class RecipeRouteController {
       else res.json(200, 1);
     }, {'user':user, 'id':recipe});
   }
+
+  public unliked(req: restify.Request, res: restify.Response, next: restify.Next) {
+   let user: any = req.headers.authorization;
+   let recipe: number = req.params.id;
+
+   let queryRel: string = "MATCH (u:User),(r:Recipe)"
+     + " WHERE u.email = $user AND ID(r) = toInteger($id)"
+     + " MATCH (u)-[rel:LIKE]->(r)"
+     + " DELETE rel"
+     + " RETURN rel";
+
+   DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+     if (result.length == 0) res.json(401, {'status': 'nok' });
+     else res.json(200, 1);
+   }, {'user':user, 'id':recipe});
+ }
 }
