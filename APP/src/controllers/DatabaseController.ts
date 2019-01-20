@@ -52,6 +52,7 @@ export class DatabaseController {
             // Callback with the array of type
             cb(resultsObject);
         }).catch(e => {
+            console.log(e);
             cb(e);
         });
     }
