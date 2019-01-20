@@ -177,7 +177,7 @@ export default class RecipeRouteController {
 
       //user relation
       let queryRel: string = "MATCH (r:Recipe),(u:User) "
-        + "WHERE r.name = $name  AND u.mail = $user "
+        + "WHERE r.name = $name  AND u.email = $user "
         + "MERGE (u)-[rel:PUBLISH]->(r) "
         + "RETURN rel";
 
@@ -245,7 +245,7 @@ export default class RecipeRouteController {
    */
   private userIsOwner(res: restify.Response, user: any, id: string, cb: () => void) {
 
-    let query = 'MATCH (r:Recipe) -- (u:User {mail : $user}) ' +
+    let query = 'MATCH (r:Recipe) -- (u:User {email : $user}) ' +
       'WHERE ID(r) = toInteger($id) ' +
       'RETURN r';
 

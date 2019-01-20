@@ -5,7 +5,8 @@ export default class UserRouteController {
 
     public saveUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         let userEmail: string = req.body.email;
-        let userName: string = req.body.username;
+        let firstName: string = req.body.firstname;
+        let lastName: string = req.body.lastname;
         let userPassword: string = req.body.password;
 
         //check if user exist
@@ -15,11 +16,11 @@ export default class UserRouteController {
 
         DatabaseController.getInstance().makeCipherQuery(queryCheckUser, 'u', result => {
             if (result.length == 0) {
-                let querySaveUser: string = 'CREATE (r:User {name:$name, email:$email, password:$password}) return r';
+                let querySaveUser: string = 'CREATE (r:User {firstname:$firstname, lastname:$lastname, email:$email, password:$password}) return r';
                 DatabaseController.getInstance().makeCipherQuery(querySaveUser, 'r', register => {
                     if (register.length == 0) res.json(401, { 'email': req.body.email, 'status': 'nok' })
                     else res.json(200, { 'email': req.body.email, 'status': 'ok' })
-                }, { 'name': userName, 'email': userEmail, 'password': userPassword })
+                }, { 'firstname': firstName, 'lastname': lastName, 'email': userEmail, 'password': userPassword })
             } else {
                 res.json(401, { 'status': 'nok' })
             }
@@ -28,7 +29,6 @@ export default class UserRouteController {
 
     public loginUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         console.log(req.body);
-        // TODO Schema Validation of the INPUT
 
         DatabaseController.getInstance().makeCipherQuery("MATCH (u:User {email: $email, password: $password}) return u", "u", login => {
 
@@ -59,7 +59,7 @@ export default class UserRouteController {
         }, { 'user': user, 'userToFollow': userToFollow });
     }
 
-    public  unfollowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
+    public unfollowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         let user: any = req.headers.authorization;
         let userToUnfollow: string = req.params.email;
 
