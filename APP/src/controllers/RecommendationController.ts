@@ -45,18 +45,17 @@ export default class RecommendationController {
         let likedQuery: string = 'MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(r:Recipe)' +
             ' WITH collect(r) as likedRecipes';
 
-        let subtractQuery: string = ' WHERE NONE (r in recipes where r in likedRecipes)' +
-            ' UNWIND recipes AS rec';
+        let subtractQuery: string = ' WHERE NONE (r in recipes where r in likedRecipes)';
 
         let query: string = likedQuery +
-            ' MATCH (u:User {email: $userEmailFrom})-[f:FOLLOW*1..2]->(ou:User)-[p:PUBLISH]->(r:Recipe)' +
-            ' WITH likedRecipes, collect(r) as recipes, length(f) as depth' +
+            ' MATCH (u:User {email: $userEmailFrom})-[f:FOLLOW*1..2]->(ou:User)-[p:PUBLISH]->(rec:Recipe)' +
+            ' WITH likedRecipes, rec, collect(rec) as recipes, length(f) as depth' +
             subtractQuery +
             ' RETURN rec, depth';
 
         let query2: string = likedQuery +
-            ' MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(i:Ingredient)<-[h:HAS]-(r:Recipe)' +
-            ' WITH likedRecipes, collect(r) as recipes, count(r.name) as count' +
+            ' MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(i:Ingredient)<-[h:HAS]-(rec:Recipe)' +
+            ' WITH likedRecipes, rec, collect(rec) as recipes, count(rec.name) as count' +
             subtractQuery +
             ' RETURN rec, count';
 
