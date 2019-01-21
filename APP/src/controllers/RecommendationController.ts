@@ -45,19 +45,19 @@ export default class RecommendationController {
         let likedQuery: string = 'MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(r:Recipe)' +
             ' WITH collect(r) as likedRecipes';
 
-        let substractQuery: string = ' WHERE NONE (r in recipes where r in likedRecipes)' +
+        let subtractQuery: string = ' WHERE NONE (r in recipes where r in likedRecipes)' +
             ' UNWIND recipes AS rec';
 
         let query: string = likedQuery +
             ' MATCH (u:User {email: $userEmailFrom})-[f:FOLLOW*1..2]->(ou:User)-[p:PUBLISH]->(r:Recipe)' +
             ' WITH likedRecipes, collect(r) as recipes, length(f) as depth' +
-            substractQuery +
+            subtractQuery +
             ' RETURN rec, depth';
 
         let query2: string = likedQuery +
             ' MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(i:Ingredient)<-[h:HAS]-(r:Recipe)' +
             ' WITH likedRecipes, collect(r) as recipes, count(r.name) as count' +
-            substractQuery +
+            subtractQuery +
             ' RETURN rec, count';
 
         DatabaseController.getInstance().makeCipherQueryMultipleReturn(query, ['rec', 'depth'], candidatesByFollow => {
