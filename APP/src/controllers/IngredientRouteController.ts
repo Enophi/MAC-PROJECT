@@ -43,6 +43,7 @@ export default class IngredientRouteController {
      * @param next next restify
      */
     public getQ(req: restify.Request, res: restify.Response, next: restify.Next) {
+        console.log(req.query)
         let match: string = req.query.match;
         let query: string = 'MATCH (i:Ingredient) WHERE toLower(i.name) STARTS WITH toLower($match) RETURN i';
 

@@ -57,6 +57,33 @@ export class DatabaseController {
         });
     }
 
+    public makeCipherQueryMultipleReturn(query: string, return_elements: string[], cb: (resultRecords: Array<any>) => void, params?: any): void {
+        // Obtain the session
+        console.log("Session open");
+        console.log(`Run Query : ${query}`);
+        let session = this.driver.session();
+
+        session.run(query, params).then(res => {
+            var resultsObject: Array<any> = [];
+        
+            res.records.forEach(record => {
+                var temp:any = {};
+                return_elements.forEach(elem => {
+                    temp[elem] = record.get(elem);
+                });
+                resultsObject.push(temp);
+            });
+
+            // Close the session
+            session.close();
+            console.log("Session close");
+            // Callback with the array of type
+            cb(resultsObject);
+        }).catch(e => {
+            cb(e);
+        });
+    }
+
     public getAll(type: string, cb: (allRec: Array<any>) => void) {
         // Obtain the session
         console.log(`Run Query : MATCH (t:${type}) RETURN t`);

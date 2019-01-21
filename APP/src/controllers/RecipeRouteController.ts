@@ -181,9 +181,9 @@ export default class RecipeRouteController {
         + "MERGE (u)-[rel:PUBLISH]->(r) "
         + "RETURN rel";
 
-      DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+      DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', releationResult => {
 
-        res.json(200, 1);
+        res.json(200, result);
       }, { 'name': recipe.name, 'user': user });
 
     }, { 'name': recipe.name, 'preparation': recipe.preparation });

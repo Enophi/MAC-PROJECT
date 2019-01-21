@@ -52,7 +52,6 @@ export default class UserRouteController {
             + " MERGE (u)-[rel:FOLLOW]->(utf)"
             + " RETURN rel";
 
-
         DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
             if (result.length == 0) res.json(401, { 'status': 'nok' })
             else res.json(200, 1)
