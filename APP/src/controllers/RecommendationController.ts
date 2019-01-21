@@ -39,19 +39,29 @@ export default class RecommendationController {
 
             DatabaseController.getInstance().makeCipherQueryMultipleReturn(query2, ['rec', 'count'], candidatesByIngredients => {
 
+                var tempResult: Map<number, any> = new Map();
                 var finalResult: Array<any> = [];
 
+                _.forEach(candidatesByIngredients, cbi => {
+                    tempResult.set(cbi.rec.identity.low, { 'rank': cbi.count.low, 'recipe': cbi.rec });
+                });
+
                 _.forEach(candidatesByFollow, cbf => {
-                    var temp: any = {};
-                    var found: Boolean = false;
+                    if (tempResult.has(cbf.rec.identity.low)) {
+                        var temp = tempResult.get(cbf.rec.identity.low);
+                        temp.rank *= 2 * cbf.depth.low;
+                        tempResult.set(cbf.rec.identity.low, temp);
+                    } else {
+                        tempResult.set(cbf.rec.identity.low, { 'rank': cbf.depth.low * 0.5, 'recipe': cbf.rec });
+                    }
+                });
 
-                    _.forEach(candidatesByIngredients, cbi => {
-                        if (cbf.rec.identity.low === cbi.rec.identity.low) {
-                            temp['factor'] = 2;
-                        }
-                    });
-
-                    finalResult.push(temp);
+                tempResult.forEach((v, k) => {
+                    
+                    finalResult.push({
+                        'recipe_id': k,
+                        'rank': v.rank
+                    })
                 });
 
                 res.json(200, finalResult);
