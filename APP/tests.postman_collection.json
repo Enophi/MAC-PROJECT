@@ -1,0 +1,884 @@
+{
+	"info": {
+		"_postman_id": "82dd50f2-4ddc-4299-b31b-9dc7488dd72c",
+		"name": "MAC - PROJET",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "U1 - Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Login\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"enophi\",\n\t\"email\":\"david@test.ch\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"    console.log(jsonData);",
+							"    pm.environment.set(\"userId\", jsonData.userId);",
+							"    pm.environment.set(\"userEmail\", jsonData.email);",
+							"    pm.environment.set(\"userEmailToFollow\", jsonData.email);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Add Receipe\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"david@test.ch\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 - Add Receipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"receipeToFollow\", jsonData[0].identity.low);",
+							"postman.setNextRequest(\"U1 - Add Receipe 2\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{userEmail}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Tarte au citron\",\n    \"preparation\":\"10\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"citron\", \"quantity\": \"10\", \"unit\": \"pce\" },\n\t{ \"name\":\"sucre\", \"quantity\": \"4\", \"unit\": \"c.s\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 - Add Receipe 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Add Receipe 3\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Carbonarra\",\n    \"preparation\":\"20\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"crème\", \"quantity\": \"250\", \"unit\": \"cl\" },\n\t{ \"name\":\"lard\", \"quantity\": \"100\", \"unit\": \"g\" },\n\t{ \"name\":\"sel\", \"quantity\": \"2\", \"unit\": \"c.c\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 - Add Receipe 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Register\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Poulet rôti\",\n    \"preparation\":\"90\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"poulet\", \"quantity\": \"1\", \"unit\": \"pce\" },\n\t{ \"name\":\"pomme de terre\", \"quantity\": \"500\", \"unit\": \"g\" },\n\t{ \"name\":\"citron\", \"quantity\": \"10\", \"unit\": \"cl\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Login\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"alain\",\n\t\"email\":\"alain@test.ch\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"    pm.environment.set(\"userEmail\", jsonData.email);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Add Receipe\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"alain@test.ch\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Add Receipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Follow U1\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Bollognese\",\n    \"preparation\":\"30\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"viande hachée\", \"quantity\": \"300\", \"unit\": \"g\" },\n\t{ \"name\":\"sel\", \"quantity\": \"3\", \"unit\": \"c.c\" },\n\t{ \"name\":\"tomate\", \"quantity\": \"200\", \"unit\": \"g\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Follow U1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"postman.setNextRequest(\"Get citron\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userToFollow\" : \"{{userEmailToFollow}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/user/follow",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"user",
+						"follow"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get citron",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a95d5ba1-b7c9-4bb4-8eca-110f238716ba",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Is citron ingredient\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql('citron');",
+							"    pm.environment.set(\"ingredientToLike\", jsonData[0].identity.low);",
+							"});",
+							"",
+							"",
+							"postman.setNextRequest(\"U2 - Like Ingredient\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/ingredients/q?match=citron",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"ingredients",
+						"q"
+					],
+					"query": [
+						{
+							"key": "match",
+							"value": "citron"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Like Ingredient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"postman.setNextRequest(\"Get poulet\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/ingredient/like/{{ingredientToLike}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"ingredient",
+						"like",
+						"{{ingredientToLike}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get poulet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a95d5ba1-b7c9-4bb4-8eca-110f238716ba",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Is citron ingredient\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql('poulet');",
+							"    pm.environment.set(\"ingredientToLike\", jsonData[0].identity.low);",
+							"});",
+							"",
+							"",
+							"postman.setNextRequest(\"U2 - Like Ingredient 2\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/ingredients/q?match=poulet",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"ingredients",
+						"q"
+					],
+					"query": [
+						{
+							"key": "match",
+							"value": "poulet"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Like Ingredient 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"postman.setNextRequest(null);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/ingredient/like/{{ingredientToLike}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"ingredient",
+						"like",
+						"{{ingredientToLike}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADD RECEIPT TEST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "tata@test.ch"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Soupe aux citrons\",\n    \"preparation\":\"180\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"soupe\", \"quantity\": \"1\", \"unit\": \"pce\" },\n\t{ \"name\":\"citron\", \"quantity\": \"10\", \"unit\": \"pce\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recommendations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "alain@test.ch",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/recommendation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recommendation"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
