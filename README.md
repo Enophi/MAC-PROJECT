@@ -47,7 +47,7 @@ Utilisation du module [newman](https://www.npmjs.com/package/newman) pour effect
 npm test
 ```
 
-Les tests vont simulés le comportement de 3 utilisateurs. Utilisez cette commande pour peupler la base avec des données d'exemple.
+Les tests vont simuler le comportement de 3 utilisateurs. Utilisez cette commande pour peupler la base avec des données d'exemple :smile:
 
 # Documentations
 - [Neo4j](https://neo4j.com/docs/)
