@@ -1,5 +1,9 @@
 import * as restify from 'restify';
 import { DatabaseController } from "./DatabaseController";
+import pino from 'pino';
+
+// LOGGER
+const L = pino();
 
 export default class UserRouteController {
 
@@ -8,6 +12,9 @@ export default class UserRouteController {
         let firstName: string = req.body.firstname;
         let lastName: string = req.body.lastname;
         let userPassword: string = req.body.password;
+
+        if (!userEmail || !firstName || !lastName || !userPassword)
+            res.json(200, { 'status': 'Certains paramètres sont manquants' })
 
         //check if user exist
         let queryCheckUser: string = 'MATCH (u:User)'
@@ -28,8 +35,6 @@ export default class UserRouteController {
     }
 
     public loginUser(req: restify.Request, res: restify.Response, next: restify.Next) {
-        console.log(req.body);
-
         DatabaseController.getInstance().makeCipherQuery("MATCH (u:User {email: $email, password: $password}) return u", "u", login => {
 
             if (login.length == 0) res.json(401, { 'email': req.body.email, 'status': 'nok' })
@@ -41,11 +46,6 @@ export default class UserRouteController {
     public followUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         let user: any = req.headers.authorization;
         let userToFollow: string = req.params.email;
-
-        console.log(req.body);
-        console.log(user);
-        console.log(userToFollow);
-
 
         let queryRel: string = "MATCH (u:User),(utf:User)"
             + " WHERE u.email = $user AND utf.email = $userToFollow"
@@ -61,9 +61,6 @@ export default class UserRouteController {
     public unfollowUser(req: restify.Request, res: restify.Response, next: restify.Next) {
         let user: any = req.headers.authorization;
         let userToUnfollow: string = req.params.email;
-
-        console.log(user);
-        console.log(userToUnfollow);
 
         let queryRel: string = "MATCH (u:User),(utuf:User)"
             + " WHERE u.email = $user AND utuf.email = $userToUnfollow"

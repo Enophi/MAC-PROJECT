@@ -1,5 +1,5 @@
 import IConfig from './IConfig';
-import {neo_pass} from './LocalConfig'
+import { neo_pass } from './LocalConfig'
 
 // Get the ENV from exec machine
 let env = process.env.NODE_ENV || 'development';

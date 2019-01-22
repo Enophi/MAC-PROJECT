@@ -5,23 +5,30 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc -p .",
+    "test": "newman run tests.postman_collection.json",
     "start.prod": "node dist/index.js",
-    "start.dev": "ts-node-dev --respawn src/index.ts"
+    "start.dev": "ts-node-dev --respawn src/index.ts | pino-pretty"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/dotenv": "^6.1.0",
-    "@types/lodash": "^4.14.120",
-    "@types/node": "^10.12.10",
-    "@types/restify": "^7.2.6",
     "dotenv": "^6.1.0",
     "lodash": "^4.17.11",
     "neo4j-driver": "^1.7.2",
+    "pino": "^5.10.8",
+    "pino-pretty": "^2.5.0",
     "restify": "^7.2.3",
     "restify-json-schema-validation-middleware": "^2.1.0",
     "ts-node-dev": "^1.0.0-pre.31",
     "typescript": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/pino": "^5.8.3",
+    "@types/dotenv": "^6.1.0",
+    "@types/lodash": "^4.14.120",
+    "@types/node": "^10.12.10",
+    "@types/restify": "^7.2.6",
+    "newman": "^4.3.1"
   }
 }

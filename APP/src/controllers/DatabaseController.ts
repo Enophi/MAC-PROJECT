@@ -1,8 +1,9 @@
 import * as Neo4J from "neo4j-driver";
 import { config } from '../config/Config';
-import { triggerAsyncId } from "async_hooks";
-import * as restify from 'restify';
-import { driver, Record } from "neo4j-driver/types/v1";
+import pino from 'pino';
+
+// LOGGER
+const L = pino();
 
 export class DatabaseController {
 
@@ -34,8 +35,7 @@ export class DatabaseController {
      */
     public makeCipherQuery(query: string, return_element: string, cb: (resultRecords: Array<any>) => void, params?: any): void {
         // Obtain the session
-        console.log("Session open");
-        console.log(`Run Query : ${query}`);
+        L.info(`Run Query : ${query}`);
         let session = this.driver.session();
 
         session.run(query, params).then(res => {
@@ -47,27 +47,32 @@ export class DatabaseController {
 
             // Close the session
             session.close();
-            console.log("Session close");
 
             // Callback with the array of type
             cb(resultsObject);
         }).catch(e => {
-            console.log(e);
+            L.error(e);
             cb(e);
         });
     }
 
+    /**
+     * Make a generic cipher with multiple return
+     * @param query The cipher query you want to apply
+     * @param return_elements[] The elements after the RETURN in the query
+     * @param cb The callback which apply after success or error of this function
+     * @param params Params to add to the query. Optional
+     */
     public makeCipherQueryMultipleReturn(query: string, return_elements: string[], cb: (resultRecords: Array<any>) => void, params?: any): void {
         // Obtain the session
-        console.log("Session open");
-        console.log(`Run Query : ${query}`);
+        L.info(`Run Query : ${query}`);
         let session = this.driver.session();
 
         session.run(query, params).then(res => {
             var resultsObject: Array<any> = [];
-        
+
             res.records.forEach(record => {
-                var temp:any = {};
+                var temp: any = {};
                 return_elements.forEach(elem => {
                     temp[elem] = record.get(elem);
                 });
@@ -76,19 +81,18 @@ export class DatabaseController {
 
             // Close the session
             session.close();
-            console.log("Session close");
             // Callback with the array of type
             cb(resultsObject);
         }).catch(e => {
+            L.error(e);
             cb(e);
         });
     }
 
     public getAll(type: string, cb: (allRec: Array<any>) => void) {
         // Obtain the session
-        console.log(`Run Query : MATCH (t:${type}) RETURN t`);
+        L.info(`Run Query : MATCH (t:${type}) RETURN t`);
         let session = this.driver.session();
-        console.log("Session open");
 
         session.run(`MATCH (t:${type}) RETURN t`, {}).then(res => {
 
@@ -99,7 +103,6 @@ export class DatabaseController {
 
             // Close the session
             session.close();
-            console.log("Session close");
 
             // Callback with the array of type
             cb(resultsObject);

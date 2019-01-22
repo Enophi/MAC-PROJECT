@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "82dd50f2-4ddc-4299-b31b-9dc7488dd72c",
+		"_postman_id": "5b6c2aa0-2239-4c06-a272-6f822a238db4",
 		"name": "MAC - PROJET",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -22,7 +22,11 @@
 							"    pm.expect(jsonData.status).to.eql(\"ok\");",
 							"});",
 							"",
-							"postman.setNextRequest(\"U1 - Login\");"
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Register\");"
 						],
 						"type": "text/javascript"
 					}
@@ -43,7 +47,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\":\"enophi\",\n\t\"email\":\"david@test.ch\",\n\t\"password\":\"password\"\n}"
+					"raw": "{\n\t\"email\":\"david@test.ch\",\n\t\"firstname\":\"david\",\n\t\"lastname\":\"cruchon\",\n\t\"password\":\"password\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3001/register",
@@ -54,6 +58,256 @@
 					"port": "3001",
 					"path": [
 						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U3 - Register\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"alain@test.ch\",\n\t\"firstname\":\"alain\",\n\t\"lastname\":\"gobet\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U3 - Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U3 - Login\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"kevin@test.ch\",\n\t\"firstname\":\"kevin\",\n\t\"lastname\":\"dovale\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U3 - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check status string\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"    pm.environment.set(\"userEmail\", jsonData.email);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U3 - Add Recipe\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"kevin@test.ch\",\n\t\"password\":\"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U3 - Add Recipe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"// Only for chaining test",
+							"pm.environment.set(\"userEmailToFollow\", pm.environment.get(\"userEmail\"));",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Login\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"recipe\":{\n    \"name\":\"Sandwich jambon-beurre\",\n    \"preparation\":\"5\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"jambon\", \"quantity\": \"3\", \"unit\": \"tranches\" },\n\t{ \"name\":\"beurre\", \"quantity\": \"1\", \"unit\": \"c.s\" }\n  ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/recipe",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recipe"
 					]
 				}
 			},
@@ -74,13 +328,14 @@
 							"pm.test(\"Check status string\", function () {",
 							"    var jsonData = pm.response.json();",
 							"    pm.expect(jsonData.status).to.eql(\"ok\");",
-							"    console.log(jsonData);",
-							"    pm.environment.set(\"userId\", jsonData.userId);",
 							"    pm.environment.set(\"userEmail\", jsonData.email);",
-							"    pm.environment.set(\"userEmailToFollow\", jsonData.email);",
 							"});",
 							"",
-							"postman.setNextRequest(\"U1 - Add Receipe\");"
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Add Recipe\");"
 						],
 						"type": "text/javascript"
 					}
@@ -118,7 +373,7 @@
 			"response": []
 		},
 		{
-			"name": "U1 - Add Receipe",
+			"name": "U1 - Add Recipe",
 			"event": [
 				{
 					"listen": "test",
@@ -129,9 +384,19 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"var jsonData = pm.response.json();",
-							"pm.environment.set(\"receipeToFollow\", jsonData[0].identity.low);",
-							"postman.setNextRequest(\"U1 - Add Receipe 2\");"
+							"pm.test(\"Is a 'Tarte aux citrons'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql(\"Tarte au citron\");",
+							"    ",
+							"    pm.environment.set(\"receipeToFollow\", jsonData[0].identity.low);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Add Recipe 2\");",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -184,18 +449,27 @@
 			"response": []
 		},
 		{
-			"name": "U1 - Add Receipe 2",
+			"name": "U1 - Add Recipe 2",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"id": "b3521032-2803-4336-b01a-91203a028e1e",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
+							"pm.test(\"Status code is 200\", function() {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"postman.setNextRequest(\"U1 - Add Receipe 3\");"
+							"pm.test(\"Is a 'Carbonarra'\", function() {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql(\"Carbonarra\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Add Recipe 3\");"
 						],
 						"type": "text/javascript"
 					}
@@ -248,7 +522,7 @@
 			"response": []
 		},
 		{
-			"name": "U1 - Add Receipe 3",
+			"name": "U1 - Add Recipe 3",
 			"event": [
 				{
 					"listen": "test",
@@ -259,7 +533,16 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"postman.setNextRequest(\"U2 - Register\");"
+							"pm.test(\"Is 'Poulet rôti'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql(\"Poulet rôti\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U1 - Follow U3\");"
 						],
 						"type": "text/javascript"
 					}
@@ -312,23 +595,39 @@
 			"response": []
 		},
 		{
-			"name": "U2 - Register",
+			"name": "U1 - Follow U3",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "5c106e5e-1e9f-4183-a80e-c1d510102757",
+						"id": "b3521032-2803-4336-b01a-91203a028e1e",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Check status string\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.status).to.eql(\"ok\");",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"1\");",
+							"});",
+							"",
+							"// Only for chaining test",
+							"pm.environment.set(\"userEmailToFollow\", pm.environment.get(\"userEmail\"));",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
 							"});",
 							"",
 							"postman.setNextRequest(\"U2 - Login\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acbdaf8e-ce9c-4323-a273-bb0f658373d3",
+						"exec": [
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -345,21 +644,28 @@
 						"name": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "{{userEmail}}"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\":\"alain\",\n\t\"email\":\"alain@test.ch\",\n\t\"password\":\"password\"\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3001/register",
+					"raw": "http://localhost:3001/user/follow/{{userEmailToFollow}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"register"
+						"user",
+						"follow",
+						"{{userEmailToFollow}}"
 					]
 				}
 			},
@@ -383,7 +689,11 @@
 							"    pm.environment.set(\"userEmail\", jsonData.email);",
 							"});",
 							"",
-							"postman.setNextRequest(\"U2 - Add Receipe\");"
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Add Recipe\");"
 						],
 						"type": "text/javascript"
 					}
@@ -421,7 +731,7 @@
 			"response": []
 		},
 		{
-			"name": "U2 - Add Receipe",
+			"name": "U2 - Add Recipe",
 			"event": [
 				{
 					"listen": "test",
@@ -430,6 +740,15 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Is a 'Bollognese'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].properties.name).to.eql(\"Bollognese\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
 							"});",
 							"",
 							"postman.setNextRequest(\"U2 - Follow U1\");"
@@ -496,6 +815,14 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"1\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
 							"postman.setNextRequest(\"Get citron\");"
 						],
 						"type": "text/javascript"
@@ -532,10 +859,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"userToFollow\" : \"{{userEmailToFollow}}\"\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3001/user/follow",
+					"raw": "http://localhost:3001/user/follow/{{userEmailToFollow}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -543,7 +870,8 @@
 					"port": "3001",
 					"path": [
 						"user",
-						"follow"
+						"follow",
+						"{{userEmailToFollow}}"
 					]
 				}
 			},
@@ -561,12 +889,16 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Is citron ingredient\", function () {",
+							"pm.test(\"Is ingredient : 'citron'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData[0].properties.name).to.eql('citron');",
-							"    pm.environment.set(\"ingredientToLike\", jsonData[0].identity.low);",
+							"    pm.expect(jsonData[0].name).to.eql('citron');",
+							"    ",
+							"    pm.environment.set(\"ingredientToLike\", jsonData[0].id);",
 							"});",
 							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
 							"",
 							"postman.setNextRequest(\"U2 - Like Ingredient\");"
 						],
@@ -614,6 +946,13 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"1\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
 							"",
 							"postman.setNextRequest(\"Get poulet\");"
 						],
@@ -681,12 +1020,16 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Is citron ingredient\", function () {",
+							"pm.test(\"Is ingredient : 'poulet'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData[0].properties.name).to.eql('poulet');",
-							"    pm.environment.set(\"ingredientToLike\", jsonData[0].identity.low);",
+							"    pm.expect(jsonData[0].name).to.eql('poulet');",
+							"    ",
+							"    pm.environment.set(\"ingredientToLike\", jsonData[0].id);",
 							"});",
 							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
 							"",
 							"postman.setNextRequest(\"U2 - Like Ingredient 2\");"
 						],
@@ -734,8 +1077,15 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"1\");",
+							"});",
 							"",
-							"postman.setNextRequest(null);"
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"Get Recommendations for U2\");"
 						],
 						"type": "text/javascript"
 					}
@@ -790,7 +1140,66 @@
 			"response": []
 		},
 		{
-			"name": "ADD RECEIPT TEST",
+			"name": "Get Recommendations for U2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fc08e7f-b487-4404-b7d9-6229fe986e97",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Recommended recipe : 'Poulet rôti'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].rank).to.eql(4);",
+							"    pm.expect(jsonData[0].recipe.name).to.eql('Poulet rôti');",
+							"    ",
+							"    // Only for chain test",
+							"    pm.environment.set(\"recipeToLike\", jsonData[0].recipe.id);",
+							"});",
+							"",
+							"postman.setNextRequest(\"U2 - Like Recomm. Recipe\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{userEmail}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3001/recommendation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"recommendation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 - Like Recomm. Recipe",
 			"event": [
 				{
 					"listen": "test",
@@ -799,7 +1208,17 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"});"
+							"});",
+							"",
+							"pm.test(\"Body is correct\", function () {",
+							"    pm.response.to.have.body(\"1\");",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"postman.setNextRequest(\"Get Recommendations for U2 again\");"
 						],
 						"type": "text/javascript"
 					}
@@ -830,36 +1249,65 @@
 					{
 						"key": "Authorization",
 						"type": "text",
-						"value": "tata@test.ch"
+						"value": "{{userEmail}}"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"recipe\":{\n    \"name\":\"Soupe aux citrons\",\n    \"preparation\":\"180\"\n  },\n  \"ingredients\": [\n\t{ \"name\":\"soupe\", \"quantity\": \"1\", \"unit\": \"pce\" },\n\t{ \"name\":\"citron\", \"quantity\": \"10\", \"unit\": \"pce\" }\n  ]\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:3001/recipe",
+					"raw": "http://localhost:3001/recipe/like/{{recipeToLike}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"recipe"
+						"recipe",
+						"like",
+						"{{recipeToLike}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Recommendations",
+			"name": "Get Recommendations for U2 again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fc08e7f-b487-4404-b7d9-6229fe986e97",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Recommended recipe : 'Tarte au citron'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].rank).to.eql(2);",
+							"    pm.expect(jsonData[0].recipe.name).to.eql('Tarte au citron');",
+							"});",
+							"",
+							"postman.setNextRequest(null);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "alain@test.ch",
-						"type": "text"
+						"type": "text",
+						"value": "{{userEmail}}"
 					}
 				],
 				"body": {

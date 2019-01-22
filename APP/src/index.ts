@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import * as restify from 'restify';
 import { config } from './config/Config'
+import pino from 'pino';
+
+// LOGGER
+const L = pino();
 
 /**
  * Create the server
@@ -24,5 +28,5 @@ fs.readdirSync(__dirname + '/routes').forEach(function (routeConfig: string) {
  * Start listening on the specify port (config/settings.ts)
  */
 api.listen(config.port, function () {
-    console.log(`INFO: ${config.name} is running at ${api.url}`)
+    L.info(`INFO: ${config.name} is running at ${api.url}`)
 });

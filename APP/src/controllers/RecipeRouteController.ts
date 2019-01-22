@@ -1,5 +1,9 @@
 import * as restify from 'restify';
 import { DatabaseController } from "./DatabaseController";
+import pino from 'pino';
+
+// LOGGER
+const L = pino();
 
 export default class RecipeRouteController {
 
@@ -29,40 +33,42 @@ export default class RecipeRouteController {
    * @param next next restify
    */
   public getAllRecipes(req: restify.Request, res: restify.Response, next: restify.Next) {
-      let query: string = "MATCH r=(:Recipe)-->() RETURN r"
-      DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
+    let query: string = "MATCH r=(:Recipe)-->() RETURN r"
+    DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
 
-        let recipes:Array<any> = [];
+      let recipes: Array<any> = [];
 
-        result.forEach(r => {
-          let ingredient = RecipeRouteController.getInstance().getIngredientFrom(r);
+      result.forEach(r => {
+        let ingredient = RecipeRouteController.getInstance().getIngredientFrom(r);
 
-          //recipe info
-          let rid = r.start.identity.low;
-          let rname = r.start.properties.name;
-          let preparation = r.start.properties.preparation;
+        //recipe info
+        let rid = r.start.identity.low;
+        let rname = r.start.properties.name;
+        let preparation = r.start.properties.preparation;
 
-          var exist = false;
-          recipes.forEach(current => {
-            if(current.id == rid){
-              exist = true;
-              //add ingredient to current recipe
-              current.ingredients.push(ingredient);
-            }
-          });
-
-          //if recipe doesn't exist in collection
-          if(!exist){
-            let recipe = {'id':rid,
-                          'name':rname,
-                          'preparation':preparation,
-                          'ingredients':[ingredient]};
-            console.log();
-            recipes.push(JSON.parse(JSON.stringify(recipe))); //fix circular object problem
+        var exist = false;
+        recipes.forEach(current => {
+          if (current.id == rid) {
+            exist = true;
+            //add ingredient to current recipe
+            current.ingredients.push(ingredient);
           }
         });
-          res.json(200, recipes);
+
+        //if recipe doesn't exist in collection
+        if (!exist) {
+          let recipe = {
+            'id': rid,
+            'name': rname,
+            'preparation': preparation,
+            'ingredients': [ingredient]
+          };
+
+          recipes.push(JSON.parse(JSON.stringify(recipe))); //fix circular object problem
+        }
       });
+      res.json(200, recipes);
+    });
   }
 
   /**
@@ -78,26 +84,28 @@ export default class RecipeRouteController {
       let rid = result[0].start.identity.low;
       let rname = result[0].start.properties.name;
       let preparation = result[0].start.properties.preparation;
-      let ingredients:Array<any> = [];
-      let owner = {'firstname':'','lastname':'','email':''};
+      let ingredients: Array<any> = [];
+      let owner = { 'firstname': '', 'lastname': '', 'email': '' };
 
       result.forEach(r => {
         let type = r.end.labels[0];
-        if(type == 'Ingredient'){
+        if (type == 'Ingredient') {
           ingredients.push(RecipeRouteController.getInstance().getIngredientFrom(r));
-        }else if(type == 'User'){
+        } else if (type == 'User') {
           let user = r.end.properties;
-          owner.firstname  = user.firstname;
-          owner.lastname   = user.lastname;
-          owner.email      = user.email;
+          owner.firstname = user.firstname;
+          owner.lastname = user.lastname;
+          owner.email = user.email;
         }
       });
 
-      let recipe = {'id':rid,
-                    'name':rname,
-                    'preparation':preparation,
-                    'ingredients':ingredients,
-                    'owner':owner};
+      let recipe = {
+        'id': rid,
+        'name': rname,
+        'preparation': preparation,
+        'ingredients': ingredients,
+        'owner': owner
+      };
       res.json(200, recipe);
     }, { 'id': req.params.id });
   }
@@ -106,12 +114,12 @@ export default class RecipeRouteController {
   * Used by getRecipe and getAllRecipes
   * @param r Any object from Cypher query
   */
-  private getIngredientFrom(r: any): any{
+  private getIngredientFrom(r: any): any {
     let iid = r.end.identity.low;
     let iname = r.end.properties.name;
     let unit = r.segments[0].relationship.properties.unit;
     let quantity = r.segments[0].relationship.properties.quantity.low;
-    return {'id':iid,'name':iname,'unit':unit,'quantity':quantity};
+    return { 'id': iid, 'name': iname, 'unit': unit, 'quantity': quantity };
   }
 
   /**
@@ -156,7 +164,6 @@ export default class RecipeRouteController {
    * @param next next restify
    */
   public addRecipe(req: restify.Request, res: restify.Response, next: restify.Next) {
-    console.log(req.body);
 
     let recipe: any = req.body.recipe;
     let ingredients: Array<any> = req.body.ingredients;
@@ -171,9 +178,9 @@ export default class RecipeRouteController {
     let query: string = "CREATE (r:Recipe {name: $name, preparation: $preparation}) RETURN r"
     DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
 
-        ingredients.forEach(ing => {
-          RecipeRouteController.getInstance().addIngredientWithRelation(ing, recipe.name);
-        });
+      ingredients.forEach(ing => {
+        RecipeRouteController.getInstance().addIngredientWithRelation(ing, recipe.name);
+      });
 
       //user relation
       let queryRel: string = "MATCH (r:Recipe),(u:User) "
@@ -250,10 +257,10 @@ export default class RecipeRouteController {
       'RETURN r';
 
     DatabaseController.getInstance().makeCipherQuery(query, 'r', result => {
-      if(result.length != 0){
+      if (result.length != 0) {
         cb();
-      }else{ //error
-        res.json(403, {"error": "user not authorized"});
+      } else { //error
+        res.json(403, { "error": "user not authorized" });
       }
     }, { 'user': user, 'id': id });
   }
@@ -274,9 +281,9 @@ export default class RecipeRouteController {
       + " RETURN rel";
 
     DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
-      if (result.length == 0) res.json(401, {'status': 'nok' });
+      if (result.length == 0) res.json(401, { 'status': 'nok' });
       else res.json(200, 1);
-    }, {'user':user, 'id':recipe});
+    }, { 'user': user, 'id': recipe });
   }
 
   /**
@@ -286,18 +293,18 @@ export default class RecipeRouteController {
    * @param next
    */
   public unliked(req: restify.Request, res: restify.Response, next: restify.Next) {
-   let user: any = req.headers.authorization;
-   let recipe: number = req.params.id;
+    let user: any = req.headers.authorization;
+    let recipe: number = req.params.id;
 
-   let queryRel: string = "MATCH (u:User),(r:Recipe)"
-     + " WHERE u.email = $user AND ID(r) = toInteger($id)"
-     + " MATCH (u)-[rel:LIKE]->(r)"
-     + " DELETE rel"
-     + " RETURN rel";
+    let queryRel: string = "MATCH (u:User),(r:Recipe)"
+      + " WHERE u.email = $user AND ID(r) = toInteger($id)"
+      + " MATCH (u)-[rel:LIKE]->(r)"
+      + " DELETE rel"
+      + " RETURN rel";
 
-   DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
-     if (result.length == 0) res.json(401, {'status': 'nok' });
-     else res.json(200, 1);
-   }, {'user':user, 'id':recipe});
- }
+    DatabaseController.getInstance().makeCipherQuery(queryRel, 'rel', result => {
+      if (result.length == 0) res.json(401, { 'status': 'nok' });
+      else res.json(200, 1);
+    }, { 'user': user, 'id': recipe });
+  }
 }
