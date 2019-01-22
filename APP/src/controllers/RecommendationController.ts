@@ -31,14 +31,36 @@ export default class RecommendationController {
         // Recettes <- Recettes publiées par les user followed (n niveau)
         // match (u:User {name: "alain"})-[f:FOLLOW*1..3]->(ou:User)-[:PUBLISH]->(r:Recipe) with r, LENGTH(f) as d return r,d
         let user = req.headers.authorization;
-        let query: string = 'match (u:User {email: $userEmailFrom})-[f:FOLLOW*1..2]->(ou:User)-[:PUBLISH]->(rec:Recipe) with rec, LENGTH(f) as depth return rec, depth';
 
-        let query2: string = 'match (u:User {email: $userEmailFrom})-[l:LIKE]->(i:Ingredient)<-[h:HAS]-(rec:Recipe) with rec, count(rec.name) as count return rec, count';
+     //   Exemple exclusion
+     //   MATCH (excluded:Ingredient)
+     //   WHERE excluded.name in $excludedIngredients
+     //   WITH collect(excluded) as excluded
+
+     //   MATCH (r:Recipe)-[:INCLUDES]->(i)
+     //   WITH excluded, r, collect(i) as ingredients
+     //   WHERE NONE (i in ingredients where i in excluded)
+     //   RETURN r
+
+        let likedQuery: string = 'MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(r:Recipe)' +
+            ' WITH collect(r) as likedRecipes';
+
+        let subtractQuery: string = ' WHERE NONE (r in recipes where r in likedRecipes)';
+
+        let query: string = likedQuery +
+            ' MATCH (u:User {email: $userEmailFrom})-[f:FOLLOW*1..2]->(ou:User)-[p:PUBLISH]->(rec:Recipe)' +
+            ' WITH likedRecipes, rec, collect(rec) as recipes, length(f) as depth' +
+            subtractQuery +
+            ' RETURN rec, depth';
+
+        let query2: string = likedQuery +
+            ' MATCH (u:User {email: $userEmailFrom})-[l:LIKE]->(i:Ingredient)<-[h:HAS]-(rec:Recipe)' +
+            ' WITH likedRecipes, rec, collect(rec) as recipes, count(rec.name) as count' +
+            subtractQuery +
+            ' RETURN rec, count';
 
         DatabaseController.getInstance().makeCipherQueryMultipleReturn(query, ['rec', 'depth'], candidatesByFollow => {
-
             DatabaseController.getInstance().makeCipherQueryMultipleReturn(query2, ['rec', 'count'], candidatesByIngredients => {
-
                 var tempResult: Map<number, any> = new Map();
                 var finalResult: Array<any> = [];
 
